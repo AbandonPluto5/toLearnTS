@@ -557,3 +557,18 @@
   - `Lowercase<StringType>` 将字符串类型的每个字符转为小写
   - `Capitalize<StringType>` 将字符串的第一个字符转为大写
   - `Uncapitalize<StringType>` 将字符串的第一个字符转为小写
+
+### 注释指令
+
+- // @ts-nocheck 告诉编译器不对当前脚本进行类型检查
+- // @ts-check 告诉编译器对当前脚本进行类型检查 不管是否开启 checkJs 编译选项
+- // @ts-ignore 告诉编译器不对下一行代码进行类型检查
+- // @ts-expect-error 当下一行有类型错误时 不显示报错信息
+- JSDoc TS 直接处理 JS 文件时 如果无法推断出类型 会使用 JS 脚本中的 JSDoc 注释
+  - @typedef 创建自定义类型 等同于 TS 中的类型别名
+  - @type 定义变量的类型
+  - @param 定义函数参数的类型
+  - @return 和 @returns 命令的作用相同 指定函数返回值的类型
+  - @extends 和类型修饰符
+    - @extends 命令用于定义继承的基类
+    - @public、@protected、@private 分别指定类的公开成员、保护成员和私有成员 @readonly 指定只读成员
