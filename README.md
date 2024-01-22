@@ -449,3 +449,111 @@
 
 - satisfies 运算符
   - 检测某个值是否符合指定类型
+
+### 类型映射
+
+- 用于不同的类型间存在相同的属性结构但属性类型不一样
+  ```
+    type A = {
+      foo: number;
+      bar: number;
+    };
+    type B = {
+      foo: string;
+      bar: string;
+    };
+    // 类型映射后
+    type A = {
+      foo: number;
+      bar: number;
+    };
+    type B = {
+      [prop in keyof A]: string;
+    };
+  ```
+- 为了提高复用 可以将常用映射写成泛型
+  ```
+    type ToBoolean<Type> = {
+      [prop in keyof Type]: boolean;
+    };
+  ```
+- Readonly 内置类型 本质也是通过映射实现
+  ```
+    type Readonly<T> = {
+      readonly [P in keyof T]: T[P];
+    };
+  ```
+- 映射会原样复制原始对象的只读属性和可选属性
+- 键名重映射 允许改变键名
+  ```
+    type A = {
+      foo: number;
+      bar: number;
+    };
+    type B = {
+      [p in keyof A as `${p}ID`]: number;
+    };
+  ```
+- 属性过滤
+  ```
+    type User = {
+      name: string;
+      age: number;
+    };
+    type Filter<T> = {
+      [K in keyof T as T[K] extends string ? K : never]: string;
+    };
+    type FilteredUser = Filter<User>; // { name: string }
+  ```
+
+### 类型工具
+
+- `Awaited<Type>` 返回 Promise 的返回值类型 还可以返回多重的 Promise 返回值类型
+  ```
+    type A = Awaited<Promise<string>>; // string
+    type B = Awaited<Promise<Promise<number>>>; // number
+  ```
+  - 如果类型参数不是 Promise 类型 就会原样返回 `type C = Awaited<boolean | Promise<number>>; // number|boolean`
+- `ConstructorParameters<Type>` 返回一个由构造函数的参数类型组成的元组
+  ```
+    type T1 = ConstructorParameters<new (x: string, y: number) => object>; // [x: string, y: number]
+    type T2 = ConstructorParameters<new (x?: string) => object>; // [x?: string | undefined]
+  ```
+  - 如果类型参数不是构造方法 就会报错
+    - 例外: 参数如果是 any 则返回 unknown[] 如果是 never 则返回 never
+- `Exclude<UnionType, ExcludedMembers>` 用来从联合类型中删除指定类型 返回一个新的类型
+- `Extract<Type, Union>` 用来从联合类型中提取指定类型 返回一个新的类型
+  - 如果参数类型不包含在联合类型中 则返回 never 类型
+- `InstanceType<Type>` 返回构造函数的实例类型
+  - 如果类型参数不是构造方法 就会报错
+    - 例外: 参数如果是 any 则返回 any 如果是 never 则返回 never
+- `NonNullable<Type>` 用来从联合类型中删除 null 类型和 undefined 类型 返回一个新类型
+- `Omit<Type, Keys>` 用来从对象类型中删除指定的属性 返回一个新的对象类型
+- `OmitThisParameter<Type>` 从函数类型中移除 this 参数
+- `Parameters<Type>` 从函数类型中提取参数类型 组成一个元组返回
+  - 如果参数类型不是带有参数的函数 就会报错
+    - 例外: 如果参数是 any 则返回 unknown 如果是 never 则返回 never
+  - 主要用于从外部模块提供的函数类型中获取参数类型
+- `Partial<Type>` 将类型参数 Type 的所有属性变为可选属性 返回一个新类型
+- `Required<Type>` 将类型参数 Type 的所有属性变为必选属性 返回一个新类型
+- `Pick<Type, Keys>` 从对象类型中提取出指定的键名 返回一个新的对象类型
+  - 必须是对象类型中存在的属性 否则会报错
+- `Readonly<Type>` 将类型参数 Type 的所有属性变为只读属性 返回一个新类型
+- `ReadonlyArray<Type>` 用来生成一个只读数组类型
+- `Record<Keys, Type>` 返回一个对象类型 Keys 是键名 Type 是键值类型
+  - 如果参数 Keys 是联合类型 则会依次展开为多个键名
+  - 如果参数 Type 是联合类型 则表明键值是联合类型
+  - Keys 的类型必须兼容 string|number|symbol 否则不能用作键名 会报错
+- `ReturnType<Type>` 返回一个函数类型 Type 的返回值类型
+  - 如果类型参数是泛型函数 返回值取决于泛型 如果泛型不带限制条件 则返回 unknown
+  - 如果类型参数不是函数 则会报错
+  - 如果类型参数是 any 或 never 则分别返回 any 和 never
+- `ThisParameterType<Type>` 提取函数类型中 this 参数的类型
+  - 如果函数没有 this 参数 则返回 unknown
+- `ThisType<Type>` 用来和其它类型组成交叉类型 提示 TS 其它类型中的 this 类型
+  - 使用时需要开启 noImplicitThis 设置
+- 针对字符串的类型工具
+  - `Uppercase<StringType>` 将字符串类型的每个字符转为大写
+  - `Lowercase<StringType>` 将字符串类型的每个字符转为小写
+  - `Capitalize<StringType>` 将字符串的第一个字符转为大写
+  - `Uncapitalize<StringType>` 将字符串的第一个字符转为小写
