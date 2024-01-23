@@ -309,7 +309,7 @@
     - 不能对默认的 default 接口进行扩展
   - 如果外部模块没有提供接口类型 可以在自己的脚本顶部加上 `declare module "模块名";` 即使外部模块没有类型声明 也可以通过编译
 - declare global
-  - 用来为 js 引擎的原生对象添加属性和方法
+  - 用来为 JS 引擎的原生对象添加属性和方法
   - 只能扩充现有对象的类型描述 不能增加新的顶层类型
 
 ### .d.ts 类型声明文件
@@ -583,11 +583,11 @@
   - baseUrl 指定 ts 项目的基准目录
   - paths 设置模块名和模块路径的映射
     - 由于在 baseUrl 后加载 所以使用时必须设置 baseUrl
-  - allowJs 开启则允许编译 js 文件 并将源目录的 JS 文件原样拷贝到编译后的目录 项目过渡时可以使用
+  - allowJs 开启则允许编译 JS 文件 并将源目录的 JS 文件原样拷贝到编译后的目录 项目过渡时可以使用
   - alwaysStrict 开启严格模式 默认为 true
   - allowSyntheticDefaultImports 是否允许 import 命令默认加载没有 default 输出的模块
     - 如: 打开这个设置，就可以写`import React from "react";`，而不是`import \* as React from "react"`;
-  - checkJs 是否对 js 文件进行类型检查 打开这个属性 自动打开 allowJs
+  - checkJs 是否对 JS 文件进行类型检查 打开这个属性 自动打开 allowJs
   - jsx 设置如何处理.tsx 文件
     - perserve 保持 jsx 语法不变 输出的文件名为.jsx
     - react 将`<div />`编译成`React.createElement("div")` 输出的文件名为.js
@@ -615,7 +615,7 @@
   - outFile 设 置将所有非模块的全局文件 编译在同一个文件里面 它只有在 module 属性为 None、System、AMD 时才生效 并且不能用来打包 CommonJS 或 ES6 模块
   - preserveConstEnums 将 const enum 结构保留下来 不替换成常量值
   - pretty 设置美化输出终端的编译信息 默认为 true
-  - removeComments 移除 TypeScript 脚本里面的注释 默认为 false
+  - removeComments 移除 TS 脚本里面的注释 默认为 false
   - resolveJsonModule 允许 import 命令导入 JSON 文件
   - rootDir 设置源码脚本所在的目录
   - rootDirs 把多个不同目录 合并成一个虚拟目录 便于模块定位
@@ -632,7 +632,7 @@
   - exactOptionalPropertyTypes 设置可选属性不能赋值为 undefined
   - forceConsistentCasingInFileNames 设置文件是否为大小写敏感 设置为 true 时编译器会检查当前项目的所有文件名大小写是否一致 不一致就报错
   - sourceMap 设置编译时是否生成 SourceMap 文件
-  - sourceRoot 在 SourceMap 里面设置 TypeScript 源文件的位置
+  - sourceRoot 在 SourceMap 里面设置 TS 源文件的位置
   - inlineSourceMap 设置将 SourceMap 文件写入编译后的 JS 文件中 否则会单独生成一个.js.map 文件
   - inlineSources 设置将原始的.ts 代码嵌入编译后的 JS 中 要求 sourceMap 或 inlineSourceMap 至少打开一个
   - isolatedModules 确保每个 TS 脚本是否可以作为独立的模块单独编译
@@ -674,3 +674,15 @@
 - references 属性值为一个数组 数组成员为对象 用来设置需要引用的底层项目
   - 对象的 path 属性用来指定文件目录 可以为含有 tsconfig.json 文件的目录 也可以直接是 tsconfig.json 文件的目录
   - 引用的底层项目的 tsconfig.json 必须启用 composite 属性
+
+### tsc 命令
+
+- 检查 TS 代码 并编译成 JS 代码
+- 基础用法
+  - tsc 使用 tsconfig.json 的配置
+  - tsc **.ts 只编译`**.ts`
+  - tsc src/\*.ts 编译 src 目录的所有 .ts 文件
+  - tsc --project tsconfig.production.json 指定编译配置文件
+  - tsc index.js --declaration --emitDeclarationOnly 只生成类型声明文件，不编译出 JS 文件
+  - tsc app.ts util.ts --target esnext --outfile index.js 多个 TS 文件编译成单个 JS 文件
+- 命令行参数 同 tsconfig.json 中的编译配置 前面加--
