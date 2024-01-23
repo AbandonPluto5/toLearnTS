@@ -572,3 +572,105 @@
   - @extends 和类型修饰符
     - @extends 命令用于定义继承的基类
     - @public、@protected、@private 分别指定类的公开成员、保护成员和私有成员 @readonly 指定只读成员
+
+### tsconfig.json 文件配置
+
+- compilerOptions 指定编译配置
+
+  - outDir 指定编译产物存放目录 如果不指定 编译出的.js 文件会存放在对应的.ts 文件的相同位置
+  - target 指定编译产物的 JS 版本
+  - module 指定编译产物的模块格式 默认值与 target 属性有关
+  - baseUrl 指定 ts 项目的基准目录
+  - paths 设置模块名和模块路径的映射
+    - 由于在 baseUrl 后加载 所以使用时必须设置 baseUrl
+  - allowJs 开启则允许编译 js 文件 并将源目录的 JS 文件原样拷贝到编译后的目录 项目过渡时可以使用
+  - alwaysStrict 开启严格模式 默认为 true
+  - allowSyntheticDefaultImports 是否允许 import 命令默认加载没有 default 输出的模块
+    - 如: 打开这个设置，就可以写`import React from "react";`，而不是`import \* as React from "react"`;
+  - checkJs 是否对 js 文件进行类型检查 打开这个属性 自动打开 allowJs
+  - jsx 设置如何处理.tsx 文件
+    - perserve 保持 jsx 语法不变 输出的文件名为.jsx
+    - react 将`<div />`编译成`React.createElement("div")` 输出的文件名为.js
+    - react-native 保持 jsx 语法不变 输出的文件名为.js
+    - react-jsx 将`<div />`编译成`_jsx("div")` 输出的文件名为.js
+    - react-jsxdev 跟 react-jsx 类似 但是为`_jsx()`加上更多的开发调试项 输出的文件名为.js
+  - lib 描述项目需要加载的 TS 内置类型描述文件 跟`/// <reference lib="" />`作用相同
+  - mapRoot 指定 SourceMap 文件的位置
+  - moduleResolution 确定模块路径的算法 如何查找模块
+    - node 采用 Node.js 的 CommonJs 模块算法
+    - node16/nodenext 采用 Node.js 的 ECMAScript 模块算法
+    - classic TS1.6 以前的算法
+    - bundler TS5.0 新增 表示当前代码会被其它打包器处理 要求 module 设为 es2015 或更高版本
+    - 默认值与 module 有关 如果 module 为 UMD、System 或 ES6/ES2015 默认值为 classic 如果 module 为 node16 或 nodenext 默认值为这两个值 其他情况下默认值为 Node
+  - moduleSuffixes 指定模块的后缀名
+  - newLine 设置换行符为 CRLF（Windows）还是 LF（Linux）
+  - noEmit 设置是否产生编译结果 如果不生成 TS 编译就纯粹作为类型检查了
+  - noEmitHelpers 设置在编译结果文件不插入 TS 辅助函数 而是通过外部引入辅助函数来解决
+  - noEmitOnError 指定一旦编译报错 就不生成编译产物 默认为 false
+  - noFallthroughCasesInSwitch 设置是否对没有 break 语句（或者 return 和 throw 语句）的 switch 语句报错 即 case 代码里面必须有终结语句
+  - noImplicitReturns 设置是否要求函数任何情况下都必须返回一个值
+  - noImplicitThis 如果 this 被推断为 any 类型是否报错
+  - noUnusedLocals 是否允许存在未使用的局部变量
+  - noUnusedParameters 是否存在允许未使用的函数参数
+  - outFile 设 置将所有非模块的全局文件 编译在同一个文件里面 它只有在 module 属性为 None、System、AMD 时才生效 并且不能用来打包 CommonJS 或 ES6 模块
+  - preserveConstEnums 将 const enum 结构保留下来 不替换成常量值
+  - pretty 设置美化输出终端的编译信息 默认为 true
+  - removeComments 移除 TypeScript 脚本里面的注释 默认为 false
+  - resolveJsonModule 允许 import 命令导入 JSON 文件
+  - rootDir 设置源码脚本所在的目录
+  - rootDirs 把多个不同目录 合并成一个虚拟目录 便于模块定位
+  - composite 是否允许当前 jsconfig.json 支持被其它项目引用 适用于多项目工作区中需要使用相同的配置 和 incremental 搭配使用
+  - incremental 使 TS 项目构建时产生 tsbuildinfo 文件 用于跟踪上次编译的信息 减少编译时间
+  - declaration 是否为每个脚本生成类型声明文件.d.ts
+  - declarationDir 设置生成的.d.ts 文件所在的目录
+  - declarationMap 生成.d.ts 类型声明文件的同时 还会生成对应的 SourceMap 文件
+  - emitBOM 设置是否在编译结果的文件头添加字节顺序标志 BOM(Byte Order Mark) 默认为 false
+  - emitDeclarationOnly 是否编译后只生产.d.ts 文件 不生成.js 文件
+  - esModuleInterop 用来修复 CommonJs 和 ES6 模块的兼容问题
+    - 如果 module 属性默认为 node16 或 nodenext 则该属性默认为 true 否则默认为 false
+    - 打开该属性 TS 将严格检查是否存在兼容性问题 将自动打开 allowSyntheticDefaultImports
+  - exactOptionalPropertyTypes 设置可选属性不能赋值为 undefined
+  - forceConsistentCasingInFileNames 设置文件是否为大小写敏感 设置为 true 时编译器会检查当前项目的所有文件名大小写是否一致 不一致就报错
+  - sourceMap 设置编译时是否生成 SourceMap 文件
+  - sourceRoot 在 SourceMap 里面设置 TypeScript 源文件的位置
+  - inlineSourceMap 设置将 SourceMap 文件写入编译后的 JS 文件中 否则会单独生成一个.js.map 文件
+  - inlineSources 设置将原始的.ts 代码嵌入编译后的 JS 中 要求 sourceMap 或 inlineSourceMap 至少打开一个
+  - isolatedModules 确保每个 TS 脚本是否可以作为独立的模块单独编译
+  - listEmittedFiles 设置编译时在终端显示生成了哪些文件
+  - listFiles 设置编译时在终端显示参与本次编译的文件列表
+  - strict 打开 TS 的严格检查 相当于同时打开 alwaysStrict、strictNullChecks、strictBindCallApply、strictFunctionTypes、strictPropertyInitialization、noImplicitAny、noImplicitThis、useUnknownInCatchVariables
+  - strictBindCallApply 是否对函数的 call()、bind()、apply()这三个方法进行类型检查
+  - strictFunctionTypes 是否对函数更严格的参数检查
+  - noImplicitAny 设置当一个表达式没有明确的类型描述、且编译器无法推断出具体类型时 是否允许将它推断为 any 类型
+  - strictNullChecks 设置对 null 和 undefined 进行严格类型检查
+  - strictPropertyInitialization 设置类的实例属性都必须初始化 必须打开 strictNullChecks
+  - suppressExcessPropertyErrors 是否关闭对象字面量的多余参数的报错
+  - traceResolution 设置编译时 是否在终端输出模块解析的具体步骤
+  - typeRoots 设置类型模块所在的目录 默认是 node_modules/@types 该目录里面的模块会自动加入编译
+  - types 默认情况下 typeRoots 目录下所有模块都会自动加入编译 如果指定了 types 属性 那么只有其中列出的模块才会自动加入编译
+  - useUnknownInCatchVariables 设置 catch 语句捕获的 try 抛出的返回值类型 从 any 变成 unknown
+  - allowUnreachableCode 是否允许存在不可能执行到的代码
+    - undefined 默认值 编辑器显示警告
+    - true 忽略不可能执行到的代码
+    - false 编译器报错
+  - allowUnusedLabels 是否允许存在没有用到的代码标签
+    - undefined 默认值 编辑器显示警告
+    - true 忽略不可能执行到的代码
+    - false 编译器报错
+
+- include 指定编译的文件列表 支持逐一列出文件 也支持通配符
+  - 支持三种通配符
+    - ? 指代单个字符
+    - \* 指代任意字符
+    - \*\* 指代任意目录层级
+  - 如果不指定文件后缀名 默认包括.ts、.tsx、.d.ts 文件 如果打开 allowJs 则还包括.js、.jsx
+- exclude 从编译列表中去除指定文件 必须和 include 一起使用
+- extends 用来指定要继承的继承的 tsconfig.json 配置文件
+  - 如果指定的路径不是./或../开头 编译器会在 node_modules 中查找指定文件
+  - extends 指定的文件会先加载 之后再加载当前的 tsconfig.json 重名属性后盖前
+- files 指定编译的文件列表
+  - 如果其中一个文件不存在就会报错
+  - 必须逐一列出文件 不支持文件匹配
+- references 属性值为一个数组 数组成员为对象 用来设置需要引用的底层项目
+  - 对象的 path 属性用来指定文件目录 可以为含有 tsconfig.json 文件的目录 也可以直接是 tsconfig.json 文件的目录
+  - 引用的底层项目的 tsconfig.json 必须启用 composite 属性
